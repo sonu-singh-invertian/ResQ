@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raksha - Women Protection System</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-red: #ef4444;
+            --accent-glow: rgba(239, 68, 68, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --green: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: var(--text-main);
+            letter-spacing: 1px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* SOS Button Section */
+        .sos-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .sos-btn {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 30px var(--accent-glow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .sos-btn:active {
+            transform: scale(0.95);
+        }
+
+        .sos-instruction {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Status & Location Section */
+        .status-box {
+            font-size: 0.9rem;
+        }
+
+        .status-box h3 {
+            margin-bottom: 10px;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .location-info {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--green);
+            word-break: break-all;
+            margin-top: 8px;
+        }
+
+        /* Emergency Contacts Section */
+        .contacts-section h3 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .contact-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        input:focus {
+            border-color: var(--accent-red);
+        }
+
+        button.action-btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            background: #3b82f6;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button.action-btn:hover {
+            background: #2563eb;
+        }
+
+        ul.contact-list {
+            list-style: none;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        ul.contact-list li {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        ul.contact-list li button {
+            background: none;
+            border: none;
+            color: var(--accent-red);
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>RAKSHA</h1>
+        <p>Smart Women Protection & Emergency System</p>
+    </header>
+
+    <div class="container">
+        <!-- SOS Panic Card -->
+        <div class="card sos-section">
+            <button class="sos-btn" id="sosBtn" onclick="triggerSOS()">SOS</button>
+            <p class="sos-instruction">Tap in emergency to send GPS location & alerts</p>
+        </div>
+
+        <!-- Live Location Card -->
+        <div class="card status-box">
+            <h3>Live GPS Status</h3>
+            <p id="statusText">Fetching location...</p>
+            <div class="location-info" id="locationCoords">Lat: -, Long: -</div>
+        </div>
+
+        <!-- Emergency Contacts Card -->
+        <div class="card contacts-section">
+            <h3>Emergency Contacts</h3>
+            <div class="contact-input-group">
+                <input type="text" id="contactName" placeholder="Name">
+                <input type="tel" id="contactPhone" placeholder="Phone Number">
+                <button class="action-btn" onclick="addContact()">Add</button>
+            </div>
+            <ul class="contact-list" id="contactList">
+                <!-- Dynamic contacts will appear here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let currentLat = null;
+        let currentLong = null;
+
+        // Get Live Location on Load
+        window.onload = function() {
+            fetchLocation();
+            loadContacts();
+        };
+
+        function fetchLocation() {
+            const statusText = document.getElementById("statusText");
+            const locationCoords = document.getElementById("locationCoords");
+
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        currentLat = position.coords.latitude;
+                        currentLong = position.coords.longitude;
+                        statusText.innerText = "Location locked successfully.";
+                        locationCoords.innerText = `Lat: ${currentLat.toFixed(4)}, Long: ${currentLong.toFixed(4)}`;
+                    },
+                    (error) => {
+                        statusText.innerText = "Location access denied or unavailable.";
+                        locationCoords.innerText = "Error fetching coordinates";
+                    },
+                    { enableHighAccuracy: true }
+                );
+            } else {
+                statusText.innerText = "Geolocation is not supported by your browser.";
+            }
+        }
+
+        // Trigger SOS Action
+        function triggerSOS() {
+            const contacts = JSON.parse(localStorage.getItem("emergencyContacts")) || [];
+            
+            if (contacts.length === 0) {
+                alert("Please add at least one emergency contact first!");
+                return;
+            }
+
+            if (!currentLat || !currentLong) {
+                alert("Fetching location... please wait a moment and try again.");
+                fetchLocation();
+                return;
+            }
+
+            const mapsLink = `https://www.maps.google.com/?q=${currentLat},${currentLong}`;
+            let alertMessage = `EMERGENCY! I need help. My current location is: ${mapsLink}`;
+
+            // Simulating sending SMS to all saved contacts
+            console.log("Sending Alert to:", contacts);
+            alert(`🚨 SOS TRIGGERED! 🚨\n\nAlert sent to ${contacts.length} emergency contacts with your live location link:\n${mapsLink}`);
+            
+            // In a real backend implementation, you would trigger an API call here (e.g., Twilio API) to send actual SMS.
+        }
+
+        // Manage Emergency Contacts using LocalStorage
+        function addContact() {
+            const nameInput = document.getElementById("contactName");
+            const phoneInput = document.getElementById("contactPhone");
+            
+            const name = nameInput.value.trim();
+            const phone = phoneInput.value.trim();
+
+            if (!name || !phone) {
+                alert("Please enter both name and phone number.");
+                return;
+            }
+
+            let contacts = JSON.parse(localStorage.getItem("emergencyContacts")) || [];
+            contacts.push({ name, phone });
+            localStorage.setItem("emergencyContacts", JSON.stringify(contacts));
+
+            nameInput.value = "";
+            phoneInput.value = "";
+            loadContacts();
+        }
+
+        function loadContacts() {
+            const contactList = document.getElementById("contactList");
+            contactList.innerHTML = "";
+
+            let contacts = JSON.parse(localStorage.getItem("emergencyContacts")) || [];
+            
+            if (contacts.length === 0) {
+                contactList.innerHTML = `<li style="justify-content: center; color: #94a3b8;">No contacts added yet</li>`;
+                return;
+            }
+
+            contacts.forEach((contact, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    <span>${contact.name} (${contact.phone})</span>
+                    <button onclick="deleteContact(${index})">Remove</button>
+                `;
+                contactList.appendChild(li);
+            });
+        }
+
+        function deleteContact(index) {
+            let contacts = JSON.parse(localStorage.getItem("emergencyContacts")) || [];
+            contacts.splice(index, 1);
+            localStorage.setItem("emergencyContacts", JSON.stringify(contacts));
+            loadContacts();
+        }
+    </script>
+</body>
+</html>
